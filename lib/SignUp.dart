@@ -391,7 +391,7 @@ class _SignUpState extends State<SignUp> {
       });
       await user.updateProfile(displayName: _firstname);
       id = user.uid;
-      firestoreInstance.collection("users").doc(id).set(
+      firestoreInstance.collection("agents").doc(id).set(
           {
             "firstname" : _firstname,
             "secondname" : _secondname,

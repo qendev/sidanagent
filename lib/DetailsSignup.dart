@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:sidan_agent/DashBoard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -14,11 +16,6 @@ class DetailsSignup extends StatefulWidget {
 
   final String uid;
 
-
-
-
-
-
   @override
   _DetailsSignupState createState() => _DetailsSignupState();
 }
@@ -26,6 +23,25 @@ class DetailsSignup extends StatefulWidget {
 
 
 class _DetailsSignupState extends State<DetailsSignup> {
+
+  ProgressDialog pr;
+
+  TextEditingController idnumberController = TextEditingController();
+  TextEditingController policeabstractController = TextEditingController();
+  TextEditingController phonenumberController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+
+
+
+
+  final firestoreInstance = FirebaseFirestore.instance;
+  final auth = FirebaseAuth.instance;
+
+
+
+
   List<String> _locations = ['English', 'Swahili'];
   String _selectedLocation; // Option 2
   String _myActivity;
@@ -157,7 +173,7 @@ class _DetailsSignupState extends State<DetailsSignup> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 5),
                   child: TextField(
-                    // controller: _passwordController,
+                    controller: idnumberController,
                     obscureText: false,
                     keyboardType: TextInputType.number,
                     style: TextStyle(fontSize: 14, color: Colors.black),
@@ -216,7 +232,7 @@ class _DetailsSignupState extends State<DetailsSignup> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 5),
                   child: TextField(
-                    // controller: _passwordController,
+                    controller: policeabstractController,
                     obscureText: false,
                     style: TextStyle(fontSize: 14, color: Colors.black),
                     decoration: InputDecoration(
@@ -241,7 +257,7 @@ class _DetailsSignupState extends State<DetailsSignup> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 5),
                   child: TextField(
-                    // controller: _passwordController,
+                    controller: phonenumberController,
                     obscureText: false,
                     keyboardType: TextInputType.number,
                     style: TextStyle(fontSize: 14, color: Colors.black),
@@ -275,6 +291,8 @@ class _DetailsSignupState extends State<DetailsSignup> {
                       ),
                       color: Color(0xffFFA451),
                       onPressed: () async {
+                        // signUp();
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => DashBoard()),
@@ -309,4 +327,47 @@ class _DetailsSignupState extends State<DetailsSignup> {
       ),
     );
   }
+
+  // void signUp() async {
+  //   setState(() {
+  //     pr.show();
+  //   });
+  //   var id;
+  //   dynamic _idnumber = idnumberController.text;
+  //   dynamic _policeabtract = policeabstractController.text;
+  //   dynamic _email = emailController.text;
+  //   dynamic _password = passwordController.text;
+  //   dynamic _phonumber = phonenumberController.text;
+  //
+  //
+  //   final User user = (await auth.createUserWithEmailAndPassword(
+  //       email: _email, password: _password))
+  //       .user;
+  //
+  //   if(user!=null){
+  //     setState(() {
+  //       pr.hide();
+  //     });
+  //     await user.updateProfile(displayName: _firstname);
+  //     id = user.uid;
+  //     firestoreInstance.collection("agents").doc(id).set(
+  //         {
+  //           "firstname" : _firstname,
+  //           "secondname" : _secondname,
+  //           "email" : _email,
+  //           "password" : _password,
+  //           "services" : _services,
+  //           "location" : _location,
+  //
+  //
+  //         });
+  //     final user1 = auth.currentUser;
+  //     Navigator.of(context).push(MaterialPageRoute(builder: (context){
+  //       return DetailsSignup(user:user1);
+  //     })
+  //     );
+  //   }
+  //
+  //
+  // }
 }

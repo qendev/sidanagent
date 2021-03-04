@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sidan_agent/DashBoard.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 void main() => runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -25,6 +27,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  ProgressDialog pr;
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+
+  final auth = FirebaseAuth.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 5),
                   child: TextField(
-                    // controller: _passwordController,
+                    controller: emailController,
                     obscureText: false,
                     style: TextStyle(fontSize: 14, color: Colors.black),
                     decoration: InputDecoration(
@@ -87,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 20, 20, 5),
                   child: TextField(
-                    // controller: _passwordController,
+                    controller: passwordController,
                     obscureText: true,
                     style: TextStyle(fontSize: 14, color: Colors.black),
                     decoration: InputDecoration(
@@ -120,6 +132,11 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       color: Color(0xffFFA451),
                       onPressed: () async {
+                        signInWithEmailAndPassword();
+
+
+
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => DashBoard()),
@@ -147,5 +164,31 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void signInWithEmailAndPassword()async {
+    setState(() {
+      pr.show();
+    });
+    dynamic _email = emailController.text;
+    dynamic _password = passwordController.text;
+    try {
+      final User user = (await auth.signInWithEmailAndPassword(email: _email, password: _password)
+      ).user;
+
+      if (user != null) {
+        setState(() {
+          pr.hide();
+        });
+      }
+      Navigator.of(context).push(MaterialPageRoute(builder: (_){
+        return DashBoard(user: user,
+        );
+      }));
+    }
+    catch (e) {
+      print(e);
+    }
+
   }
 }
