@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:sidan_agent/DashBoard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -8,9 +9,21 @@ void main() => runApp(MaterialApp(
     ));
 
 class DetailsSignup extends StatefulWidget {
+
+ DetailsSignup({this.uid, User user});
+
+  final String uid;
+
+
+
+
+
+
   @override
   _DetailsSignupState createState() => _DetailsSignupState();
 }
+
+
 
 class _DetailsSignupState extends State<DetailsSignup> {
   List<String> _locations = ['English', 'Swahili'];

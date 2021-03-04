@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1033275087820",
+    "project_id": "sidanagent",
+    "storage_bucket": "sidanagent.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033275087820:android:19ebcc35b48846f8efdb69",
+        "android_client_info": {
+          "package_name": "com.example.sidan_agent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1033275087820-5jbkrbnq29qnqq9s95rvjuna3cub5lc4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBjFHd0cR8JFR7d2taPSfHglFdkzSJfNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1033275087820-5jbkrbnq29qnqq9s95rvjuna3cub5lc4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

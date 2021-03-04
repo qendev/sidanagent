@@ -1,14 +1,27 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:sidan_agent/SignUp.dart';
 import 'package:sidan_agent/LoginPage.dart';
 
-void main() => runApp(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyApp(),
-    )
-);
+// void main() => runApp(
+//     MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: MyApp(),)
+// );
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: MyApp(),
+      )
+  );
+}
+
+
 
 class MyApp extends StatefulWidget {
   @override
@@ -18,6 +31,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -35,7 +49,7 @@ class _MyAppState extends State<MyApp> {
                   )),
               SizedBox(height: 20,),
               Text(
-                  'SIDAN',
+                  'SIDAN AGENT APP  ',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20.0,
@@ -126,6 +140,7 @@ class _MyAppState extends State<MyApp> {
                     ),
                     color: Color(0xff006DFF),
                     onPressed: () async {
+
 
                     },
                     child:
