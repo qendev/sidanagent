@@ -1,9 +1,15 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:sidan_agent/DashBoard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sidan_agent/LoginPage.dart';
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -24,24 +30,28 @@ class DetailsSignup extends StatefulWidget {
 
 class _DetailsSignupState extends State<DetailsSignup> {
 
+  String photoImageUrl;
+  String idImageUrl;
+
+  //declare the progressDialog
   ProgressDialog pr;
 
+  //declare the different controllers for the diffrent fields
   TextEditingController idnumberController = TextEditingController();
   TextEditingController policeabstractController = TextEditingController();
   TextEditingController phonenumberController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-
-
-
-
+  //decalre an instance of firebasestore
   final firestoreInstance = FirebaseFirestore.instance;
+
+  //decalre an instance of firebaseauth
   final auth = FirebaseAuth.instance;
 
 
 
-
+  //declare the language collection and the dropdown features
   List<String> _locations = ['English', 'Swahili'];
   String _selectedLocation; // Option 2
   String _myActivity;
@@ -67,6 +77,7 @@ class _DetailsSignupState extends State<DetailsSignup> {
 
   @override
   Widget build(BuildContext context) {
+    var image;  
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -126,7 +137,8 @@ class _DetailsSignupState extends State<DetailsSignup> {
                               height: 50,
                               child: RaisedButton(
                                 color: Colors.yellow[700],
-                                onPressed: () {},
+                                onPressed: () => uploadImage(),
+
                                 child: Text(
                                   'Upload Face Photo',
                                   style: TextStyle(color: Colors.black),
@@ -137,8 +149,9 @@ class _DetailsSignupState extends State<DetailsSignup> {
                               margin: EdgeInsets.fromLTRB(32, 0, 0, 0),
                               child: CircleAvatar(
                                 radius: 48.0,
-                                backgroundImage:
-                                    AssetImage('assets/user.jpg'),
+                                child:(photoImageUrl !=null)
+                                ?Image.network(photoImageUrl)
+                                 :CircleAvatar(radius: 48.0,)
                               ),
                             ),
                           ],
@@ -149,10 +162,11 @@ class _DetailsSignupState extends State<DetailsSignup> {
                             children: <Widget>[
                               SizedBox(
                                 width: 140,
-                                height: 24,
+                                height: 50,
                                 child: RaisedButton(
                                   color: Colors.yellow[700],
-                                  onPressed: () {},
+                                  onPressed: ()=> uploadId(),
+
                                   child: Text(
                                     'Upload ID Card',
                                     style: TextStyle(color: Colors.black),
@@ -161,7 +175,14 @@ class _DetailsSignupState extends State<DetailsSignup> {
                               ),
                               Container(
                                 margin: EdgeInsets.fromLTRB(32, 0, 0, 0),
-                                child: Image.asset('assets/id.png'),
+                                child: CircleAvatar(
+                                  radius: 48.0,
+                                    child:(idImageUrl !=null)
+                                        ?Image.network(idImageUrl)
+                                        :CircleAvatar(radius: 48.0,)
+                                ),
+                                    
+
                               ),
                             ],
                           ),
@@ -291,7 +312,7 @@ class _DetailsSignupState extends State<DetailsSignup> {
                       ),
                       color: Color(0xffFFA451),
                       onPressed: () async {
-                        // signUp();
+                        signUp();
 
                         Navigator.push(
                           context,
@@ -328,46 +349,122 @@ class _DetailsSignupState extends State<DetailsSignup> {
     );
   }
 
-  // void signUp() async {
-  //   setState(() {
-  //     pr.show();
-  //   });
-  //   var id;
-  //   dynamic _idnumber = idnumberController.text;
-  //   dynamic _policeabtract = policeabstractController.text;
-  //   dynamic _email = emailController.text;
-  //   dynamic _password = passwordController.text;
-  //   dynamic _phonumber = phonenumberController.text;
-  //
-  //
-  //   final User user = (await auth.createUserWithEmailAndPassword(
-  //       email: _email, password: _password))
-  //       .user;
-  //
-  //   if(user!=null){
-  //     setState(() {
-  //       pr.hide();
-  //     });
-  //     await user.updateProfile(displayName: _firstname);
-  //     id = user.uid;
-  //     firestoreInstance.collection("agents").doc(id).set(
-  //         {
-  //           "firstname" : _firstname,
-  //           "secondname" : _secondname,
-  //           "email" : _email,
-  //           "password" : _password,
-  //           "services" : _services,
-  //           "location" : _location,
-  //
-  //
-  //         });
-  //     final user1 = auth.currentUser;
-  //     Navigator.of(context).push(MaterialPageRoute(builder: (context){
-  //       return DetailsSignup(user:user1);
-  //     })
-  //     );
-  //   }
-  //
-  //
-  // }
+  void signUp() async{
+    setState(() {
+      pr.show();
+    });
+    var id;
+    dynamic _idnumber = idnumberController.text;
+    dynamic _policeabtract = policeabstractController.text;
+    dynamic _email = emailController.text;
+    dynamic _password = passwordController.text;
+    dynamic _phonumber = phonenumberController.text;
+
+
+    final User user = (await auth.createUserWithEmailAndPassword(
+        email: _email, password: _password))
+        .user;
+
+    if(user!=null){
+      setState(() {
+        pr.hide();
+      });
+      await user.updateProfile(displayName: _idnumber);
+      id = user.uid;
+      firestoreInstance.collection("agents").doc(id).set(
+          {
+            "idnumber" : _idnumber,
+            "policeabtract" : _policeabtract,
+            "email" : _email,
+            "password" : _password,
+            "phonenumber" : _phonumber,
+
+
+          });
+      final user1 = auth.currentUser;
+      Navigator.of(context).push(MaterialPageRoute(builder: (context){
+        return LoginPage(user:user1);
+      })
+      );
+    }
+
+
+  }
+
+  void uploadImage() async {
+    //Create an instance of firebsestorage
+    final _storage =FirebaseStorage.instance;
+    final _picker = ImagePicker();
+
+    PickedFile image;
+
+    //check for permissions
+    await Permission.photos.request();
+    //check and see results for the above
+    var permissionStatus = await Permission.photos.status;
+
+
+    //select image from gallery
+     image = await _picker.getImage(source: ImageSource.gallery);
+
+    //send a file to firebase
+    var file =File(image.path);
+
+    //check if we get an image path
+    if(image !=null){
+      //upload to firebase
+      var snapshot =await _storage.ref()
+          .child('imageFolderName/imageName')
+          .putFile(file)
+          .onComplete;
+
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        photoImageUrl = downloadUrl;
+      });
+
+    }else{
+      print('No Path Reveived');
+
+    }
+
+  }
+
+  void uploadId() async{
+    //Create an instance of firebsestorage
+    final _storage =FirebaseStorage.instance;
+    final _picker = ImagePicker();
+
+    PickedFile image;
+
+    //check for permissions
+    await Permission.photos.request();
+    //check and see results for the above
+    var permissionStatus = await Permission.photos.status;
+
+
+    //select image from gallery
+    image = await _picker.getImage(source: ImageSource.gallery);
+
+    //send a file to firebase
+    var file =File(image.path);
+
+    //check if we get an image path
+    if(image !=null){
+      //upload to firebase
+      var snapshot =await _storage.ref()
+          .child('idFolderName/id')
+          .putFile(file)
+          .onComplete;
+
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        idImageUrl = downloadUrl;
+      });
+
+    }else{
+      print('No Path Reveived');
+
+    }
+  }
 }

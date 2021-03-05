@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sidan_agent/DashBoard.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sidan_agent/DetailsSignup.dart';
 void main() => runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -11,14 +12,9 @@ void main() => runApp(
 
 class LoginPage extends StatefulWidget {
 
+  LoginPage({this.uid, User user});
 
-
-
-
-
-
-
-
+  final String uid;
 
 
   @override
@@ -39,6 +35,26 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    pr = new ProgressDialog(context);
+
+    //style the progressbar
+    pr.style(
+        message: 'Please Wait...',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: CircularProgressIndicator(),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progress: 0.0,
+        maxProgress: 100.0,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600));
+
+
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -134,9 +150,6 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () async {
                         signInWithEmailAndPassword();
 
-
-
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => DashBoard()),
@@ -166,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void signInWithEmailAndPassword()async {
+  void signInWithEmailAndPassword() async{
     setState(() {
       pr.show();
     });
